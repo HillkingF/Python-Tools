@@ -123,3 +123,16 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Python:
+*.py[cod]
+*.so
+*.egg
+*.egg-info
+dist
+build
+
+# Windows:
+Thumbs.db
+ehthumbs.db
+Desktop.ini

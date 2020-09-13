@@ -397,16 +397,61 @@ class toolclass:
 
 if __name__ == '__main__':
     # str = '京沪津渝冀晋蒙辽吉黑苏浙皖闽赣鲁豫鄂湘粤桂琼川贵云藏陕甘青宁新使ABCDEFGHJKLMNPQRSTUVWXYZ0123456789警领港澳学挂'
-    label_dict = dict({x: int(0) for i, x in enumerate(list(str))})
+    # label_dict = dict({x: int(0) for i, x in enumerate(list(str))})
+    #
+    # oldtxt = r'E:\data\motorcycle\图像裁剪+分析\测试结果\扩充单层的测试结果\0.1-0.9\wrong.txt'
+    # c1 = r'E:\data\motorcycle\图像裁剪+分析\测试结果\扩充单层的测试结果\0.1-0.9\c1.txt'
+    # c2 = r'E:\data\motorcycle\图像裁剪+分析\测试结果\扩充单层的测试结果\0.1-0.9\c2.txt'
+    # c3 = r'E:\data\motorcycle\图像裁剪+分析\测试结果\扩充单层的测试结果\0.1-0.9\c3.txt'
+    #
+    # oldimgdir = r'E:\data\motorcycle\图像裁剪+分析\测试结果\扩充单层的测试结果\0.1-0.9\wrong'
+    # newimgdir = r'E:\data\motorcycle\图像裁剪+分析\测试结果\扩充单层的测试结果\0.1-0.9\c3'
+    # with open(oldtxt, 'r', encoding='utf-8')as f1:
+    #     f1lines = f1.readlines()
+    #     for f1line in f1lines:
+    #         name = f1line.strip('\n').split(' ')[1]   #target
+    #         firstcap = name[0]
+    #         label_dict[firstcap] += 1
+    #         # shutil.copy(oldimgdir + '\\' + name, newimgdir + '\\' + name)
+    # for k in label_dict.keys():
+    #     print(k, ': ' , label_dict[k])
+    # exit()
 
 
 
+    # priallimg = 'E:/data/carplate/car_single/2_clear/traindataset/'
+    # alllabel = r"E:\data\carplate\car_single\2_clear\traindataset\0-clear-all.txt"
+    #
+    # province = '云'
+    # classnum = '.jpg 24 '
+    # newimg = 'E:/data/carplate/car_single/datajiancha/1/' + province + '/'
+    # count = 0
+    # with open(alllabel, 'r', encoding='utf-8')as f:
+    #     lines = f.readlines()
+    #     for line in lines:
+    #         if classnum in line:
+    #             count += 1
+    #             imgname = line.split(' ')[0]
+    #             oldimgpath = priallimg + imgname
+    #             newimgpath = newimg + str(count) + '-' + imgname.split('/')[1]
+    #             shutil.copy(oldimgpath, newimgpath)
 
-    for x in labelsheng.keys():
-        print(x, labelsheng[x])
+    firstwrong = r'E:\data\motorcycle\图像裁剪+分析\测试结果\扩充单层的测试结果\0.1-0.9\清晰\firstwrong.txt'
+    str = '湘宁浙鲁云新U鄂粤川0Y桂挂12贵'
+    label_dict = {x: int(0) for i, x in enumerate(list(str))}
+    labelsheng = {}
+    count = 0
+    with open(firstwrong, 'r', encoding='utf-8')as f:
+        lines = f.readlines()
+        for line in lines:
+            newline = line.strip('\n').split(' ')
+            target = newline[1]
+            res = newline[2]
+            if target[0] == '桂':
+                if len(target) != len(res):
+                    count += 1
 
-
-
+    print(count)
     exit()
 
 

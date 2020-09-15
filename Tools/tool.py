@@ -436,22 +436,16 @@ if __name__ == '__main__':
     #             newimgpath = newimg + str(count) + '-' + imgname.split('/')[1]
     #             shutil.copy(oldimgpath, newimgpath)
 
-    firstwrong = r'E:\data\motorcycle\图像裁剪+分析\测试结果\扩充单层的测试结果\0.1-0.9\清晰\firstwrong.txt'
-    str = '湘宁浙鲁云新U鄂粤川0Y桂挂12贵'
-    label_dict = {x: int(0) for i, x in enumerate(list(str))}
-    labelsheng = {}
-    count = 0
-    with open(firstwrong, 'r', encoding='utf-8')as f:
+    allmohutxt = r'E:\data\motorcycle\图像裁剪+分析\重新分类\newmohu.txt'
+    single = r'E:\data\motorcycle\图像裁剪+分析\重新分类\single.txt'
+    imgdir = r'E:\data\motorcycle\图像裁剪+分析\重新分类\单层' + '\\'
+    with open(allmohutxt, 'r', encoding='utf-8')as f, open(single, 'a', encoding='utf-8')as f1:
         lines = f.readlines()
         for line in lines:
-            newline = line.strip('\n').split(' ')
-            target = newline[1]
-            res = newline[2]
-            if target[0] == '桂':
-                if len(target) != len(res):
-                    count += 1
+            imgname = line.split(' ')[0]
+            if os.path.exists(imgdir + imgname):
+                f1.write(line)
 
-    print(count)
     exit()
 
 

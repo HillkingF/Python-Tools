@@ -436,15 +436,25 @@ if __name__ == '__main__':
     #             newimgpath = newimg + str(count) + '-' + imgname.split('/')[1]
     #             shutil.copy(oldimgpath, newimgpath)
 
-    allmohutxt = r'E:\data\motorcycle\图像裁剪+分析\重新分类\newmohu.txt'
-    single = r'E:\data\motorcycle\图像裁剪+分析\重新分类\single.txt'
-    imgdir = r'E:\data\motorcycle\图像裁剪+分析\重新分类\单层' + '\\'
-    with open(allmohutxt, 'r', encoding='utf-8')as f, open(single, 'a', encoding='utf-8')as f1:
+
+    traintxt = r'E:\data\motorcycle\图像裁剪+分析\重新分类\dataset\moto_test.txt'
+    newtraintxt = r'E:\data\motorcycle\图像裁剪+分析\重新分类\dataset\new_moto_test.txt'
+    # testtxt = r'E:\data\motorcycle\图像裁剪+分析\重新分类\dataset\moto_test.txt'
+
+    str1 = '京沪津渝冀晋蒙辽吉黑苏浙皖闽赣鲁豫鄂湘粤桂琼川贵云藏陕甘青宁新使ABCDEFGHJKLMNPQRSTUVWXYZ0123456789警领港澳学挂'
+    label_dict = dict({x: str(i) for i, x in enumerate(list(str1))})
+    with open(traintxt, 'r', encoding='utf-8')as f, \
+            open(newtraintxt, 'a', encoding='utf-8')as f1:
         lines = f.readlines()
         for line in lines:
-            imgname = line.split(' ')[0]
-            if os.path.exists(imgdir + imgname):
-                f1.write(line)
+            numbers = line.strip('\n').split(' ')[1]
+            newline = line.split(' ')[0]
+            for i in range(len(numbers)):
+                num = label_dict[numbers[i]]
+                newline = newline + ' ' + num
+            newline = 'moto_test/' + newline + '\n'
+            f1.write(newline)
+            print(newline)
 
     exit()
 

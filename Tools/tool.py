@@ -437,7 +437,7 @@ if __name__ == '__main__':
     #             shutil.copy(oldimgpath, newimgpath)
 
 
-    traintxt = r'E:\data\motorcycle\图像裁剪+分析\重新分类\dataset\moto_test.txt'
+    traintxt = r'E:\data\motorcycle\图像裁剪+分析\重新分类\dataset\未转化成数字-moto_test.txt'
     newtraintxt = r'E:\data\motorcycle\图像裁剪+分析\重新分类\dataset\new_moto_test.txt'
     # testtxt = r'E:\data\motorcycle\图像裁剪+分析\重新分类\dataset\moto_test.txt'
 

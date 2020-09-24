@@ -436,25 +436,16 @@ if __name__ == '__main__':
     #             newimgpath = newimg + str(count) + '-' + imgname.split('/')[1]
     #             shutil.copy(oldimgpath, newimgpath)
 
-
-    traintxt = r'E:\data\motorcycle\图像裁剪+分析\重新分类\dataset\未转化成数字-moto_test.txt'
-    newtraintxt = r'E:\data\motorcycle\图像裁剪+分析\重新分类\dataset\new_moto_test.txt'
-    # testtxt = r'E:\data\motorcycle\图像裁剪+分析\重新分类\dataset\moto_test.txt'
-
-    str1 = '京沪津渝冀晋蒙辽吉黑苏浙皖闽赣鲁豫鄂湘粤桂琼川贵云藏陕甘青宁新使ABCDEFGHJKLMNPQRSTUVWXYZ0123456789警领港澳学挂'
-    label_dict = dict({x: str(i) for i, x in enumerate(list(str1))})
-    with open(traintxt, 'r', encoding='utf-8')as f, \
-            open(newtraintxt, 'a', encoding='utf-8')as f1:
-        lines = f.readlines()
+    double = r'E:\data\carplate\car_double\2_moto_test.txt'
+    doublepanbie = r'E:\data\carplate\car_double\2_moto_test_addpanbie.txt'
+    with open(double, 'r', encoding='utf-8')as f1, open(doublepanbie, 'a', encoding='utf-8')as f2:
+        lines = f1.readlines()
         for line in lines:
-            numbers = line.strip('\n').split(' ')[1]
-            newline = line.split(' ')[0]
-            for i in range(len(numbers)):
-                num = label_dict[numbers[i]]
-                newline = newline + ' ' + num
-            newline = 'moto_test/' + newline + '\n'
-            f1.write(newline)
-            print(newline)
+            newline = line.strip('\n') + ' 2\n'
+            f2.write(newline)
+
+
+
 
     exit()
 

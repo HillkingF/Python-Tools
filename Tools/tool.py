@@ -14,6 +14,7 @@ import pandas as pd
 
 
 
+
 class toolclass:
 
     def __init__(self):
@@ -396,45 +397,40 @@ class toolclass:
 
 
 if __name__ == '__main__':
-    # str = '京沪津渝冀晋蒙辽吉黑苏浙皖闽赣鲁豫鄂湘粤桂琼川贵云藏陕甘青宁新使ABCDEFGHJKLMNPQRSTUVWXYZ0123456789警领港澳学挂'
-    # label_dict = dict({x: int(0) for i, x in enumerate(list(str))})
+    # shengstr = '京沪津渝冀晋蒙辽吉黑苏浙皖闽赣鲁豫鄂湘粤桂琼川贵云藏陕甘青宁新使ABCDEFGHJKLMNPQRSTUVWXYZ0123456789警领港澳学挂'
+    # label_dict = dict({x: i for i, x in enumerate(list(shengstr))})
     #
-    # oldtxt = r'E:\data\motorcycle\图像裁剪+分析\测试结果\扩充单层的测试结果\0.1-0.9\wrong.txt'
-    # c1 = r'E:\data\motorcycle\图像裁剪+分析\测试结果\扩充单层的测试结果\0.1-0.9\c1.txt'
-    # c2 = r'E:\data\motorcycle\图像裁剪+分析\测试结果\扩充单层的测试结果\0.1-0.9\c2.txt'
-    # c3 = r'E:\data\motorcycle\图像裁剪+分析\测试结果\扩充单层的测试结果\0.1-0.9\c3.txt'
+    # oldtxt = r'E:\data\motorcycle\图像裁剪+分析\重新分类\模糊重分类\newmohu.txt'
+    # mohuimg = r'E:\data\motorcycle\图像裁剪+分析\重新分类\模糊重分类\清晰' + '\\'
     #
-    # oldimgdir = r'E:\data\motorcycle\图像裁剪+分析\测试结果\扩充单层的测试结果\0.1-0.9\wrong'
-    # newimgdir = r'E:\data\motorcycle\图像裁剪+分析\测试结果\扩充单层的测试结果\0.1-0.9\c3'
-    # with open(oldtxt, 'r', encoding='utf-8')as f1:
+    # newtxt = r'E:\data\motorcycle\图像裁剪+分析\重新分类\模糊重分类\qingxi.txt'
+    #
+    # with open(oldtxt, 'r', encoding='utf-8')as f1, open(newtxt, 'w', encoding='utf-8')as f2:
     #     f1lines = f1.readlines()
     #     for f1line in f1lines:
-    #         name = f1line.strip('\n').split(' ')[1]   #target
-    #         firstcap = name[0]
-    #         label_dict[firstcap] += 1
-    #         # shutil.copy(oldimgdir + '\\' + name, newimgdir + '\\' + name)
-    # for k in label_dict.keys():
-    #     print(k, ': ' , label_dict[k])
+    #         imgname = f1line.strip('\n').split(' ')[0]   #img
+    #         target = f1line.strip('\n').split(' ')[1]   #target
+    #         hang = imgname
+    #         if os.path.exists(mohuimg + imgname):
+    #             for x in target:
+    #                 tmp = label_dict[x]
+    #                 hang = hang + ' ' + str(tmp)
+    #             hang = hang + ' 2\n'
+    #             f2.write(hang)
     # exit()
 
 
+    oldtxt = r'E:\data\motorcycle\图像裁剪+分析\重新分类\模糊重分类\2_moto_train_2th.txt'
+    newtxt = r'E:\data\motorcycle\图像裁剪+分析\重新分类\模糊重分类\12_moto_train_2th.txt'
 
-    # priallimg = 'E:/data/carplate/car_single/2_clear/traindataset/'
-    # alllabel = r"E:\data\carplate\car_single\2_clear\traindataset\0-clear-all.txt"
-    #
-    # province = '云'
-    # classnum = '.jpg 24 '
-    # newimg = 'E:/data/carplate/car_single/datajiancha/1/' + province + '/'
-    # count = 0
-    # with open(alllabel, 'r', encoding='utf-8')as f:
-    #     lines = f.readlines()
-    #     for line in lines:
-    #         if classnum in line:
-    #             count += 1
-    #             imgname = line.split(' ')[0]
-    #             oldimgpath = priallimg + imgname
-    #             newimgpath = newimg + str(count) + '-' + imgname.split('/')[1]
-    #             shutil.copy(oldimgpath, newimgpath)
+    with open(oldtxt, 'r', encoding='utf-8')as f1, open(newtxt, 'w', encoding='utf-8')as f2:
+        f1lines = f1.readlines()
+        for f1line in f1lines:
+            hang = 'moto_train_2th/' + f1line
+            f2.write(hang)
+    exit()
+
+
 
     double = r'E:\data\carplate\car_double\2_moto_test.txt'
     doublepanbie = r'E:\data\carplate\car_double\2_moto_test_addpanbie.txt'

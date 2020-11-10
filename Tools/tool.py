@@ -420,14 +420,27 @@ if __name__ == '__main__':
     # exit()
 
 
-    oldtxt = r'E:\data\motorcycle\图像裁剪+分析\重新分类\模糊重分类\2_moto_train_2th.txt'
-    newtxt = r'E:\data\motorcycle\图像裁剪+分析\重新分类\模糊重分类\12_moto_train_2th.txt'
+    oldtxt = r'E:\data\carplate\car_single\1_mohu\traindataset\2-yuanshi-ewaide.txt'
+    newtxt = r'E:\data\carplate\car_single\1_mohu\traindataset\6_new.txt'
+    oldimg = r'E:\data\carplate\car_single\1_mohu\traindataset' + '\\'
+    newimg = r'E:\data\carplate\car_single\1_mohu\traindataset\ewaide' + '\\'
+    count = 0
 
     with open(oldtxt, 'r', encoding='utf-8')as f1, open(newtxt, 'w', encoding='utf-8')as f2:
         f1lines = f1.readlines()
         for f1line in f1lines:
-            hang = 'moto_train_2th/' + f1line
-            f2.write(hang)
+            # count += 1
+            name = f1line.split(' ')[0]
+            oldpic = oldimg + name
+
+            # newline = 'yuanshi/'+ str(count) + '-' + f1line.split('/')[1]
+            # newname = newline.split(' ')[0]
+            # f2.write(newline)
+            newname = name.split('/')[1]
+
+            shutil.move(oldpic, newimg + newname )
+
+
     exit()
 
 

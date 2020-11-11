@@ -418,6 +418,17 @@ if __name__ == '__main__':
     #             hang = hang + ' 2\n'
     #             f2.write(hang)
     # exit()
+    txt = r"C:\Users\office\Desktop\annotation_coor_new.txt"
+    newtxt = r"C:\Users\office\Desktop\annotation_coor_new_small100.txt"
+    with open(txt, 'r', encoding='utf-8')as f1, open(newtxt, 'w', encoding='utf-8')as f2:
+        # lines = f1.readlines()
+        count = 0
+        for line in f1:
+            count += 1
+            if count < 101:
+                f2.write(line)
+
+    exit()
 
 
     oldtxt = r'E:\data\carplate\car_single\1_mohu\traindataset\2-yuanshi-ewaide.txt'

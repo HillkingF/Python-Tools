@@ -302,7 +302,7 @@ class toolclass:
         return self.rtn
 
     # 根据四个角点裁剪图片  这个方法用的是透射变换
-    def cutpic(self, oldpath, zuobiao, sizechange):
+    def cutpic_4points(self, oldpath, zuobiao, sizechange):
         try:
             if os.path.exists(oldpath[0]):#oldpath[0]):
                 img = cv2.imdecode(np.fromfile(oldpath[0], dtype=np.uint8), -1)
@@ -333,6 +333,17 @@ class toolclass:
             # cv2.imencode('.jpg', warped)[1].tofile(newpath)
         except Exception as err:
             return 'cut_error'
+
+    # 根据左上和右下两个点裁剪图像，使用的还是opencv
+    def cutpic_2points(self, picpath, savepath, zuoshang_x, zuoshang_y, youxia_x, youxia_y):
+        img = cv2.imdecode(np.fromfile(picpath, dtype=np.uint8), -1)
+        coor1x = int(zuoshang_x)  # 20  向下取整
+        coor1y = int(zuoshang_y)  # 30
+        coor3x = int(youxia_x) + 1  # 80  向上取整
+        coor3y = int(youxia_y) + 1  # 90
+        crop = img[coor1y: coor3y, coor1x: coor3x, :]  # 30:90, 20:80,  第三个：应该是指通道
+        cv2.imwrite(savepath, crop)
+
 
 
     # 随机从txt挑选一定数量的行，进行数据集划分
@@ -394,75 +405,70 @@ class toolclass:
         if not os.path.exists(dirpath):
             os.makedirs(dirpath)
 
+    def drawimg_withpoints(self):  # 在图像上画点
+        from PIL import Image
+        from pylab import imshow
+        from pylab import array
+        from pylab import plot
+        from pylab import title
+        import pylab
+        # 读取图像到数组中
+        im = array(Image.open(r'D:\GitHub\Python-Tools\Tools\ballet_106_0_0.jpg'))
+        # 绘制图像
+        imshow(im)
+        # 一些点
+        x = 13.786744992  #[box[0][0], box[1][0], box[2][0], box[3][0], ]
+        y = 6.24719206297                #[box[0][1], box[1][1], box[2][1], box[3][1], ]
+        # 使用红色星状标记绘制点
+        plot(x, y, 'r*')
+
+        # 绘制连接前两个点的线
+        # plot(x[:2],y[:2])
+        # 添加标题，显示绘制的图像
+        title('Plotting: "empire.jpg"')
+        pylab.show()
+
+    def grayimg(self,image): # 将一幅图像变成灰度图，并放缩到特定的长度
+        img = cv2.imread(image, 0)
+        # img = cv2.imread(image)
+        # gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+
+
+        cv2.imshow("image", img)
+        dst = cv2.resize(img, (50, 8), interpolation=cv2.INTER_CUBIC)
+        cv2.imshow("imd",dst)
+
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+
+
+
 
 
 if __name__ == '__main__':
-    # shengstr = '京沪津渝冀晋蒙辽吉黑苏浙皖闽赣鲁豫鄂湘粤桂琼川贵云藏陕甘青宁新使ABCDEFGHJKLMNPQRSTUVWXYZ0123456789警领港澳学挂'
-    # label_dict = dict({x: i for i, x in enumerate(list(shengstr))})
-    #
-    # oldtxt = r'E:\data\motorcycle\图像裁剪+分析\重新分类\模糊重分类\newmohu.txt'
-    # mohuimg = r'E:\data\motorcycle\图像裁剪+分析\重新分类\模糊重分类\清晰' + '\\'
-    #
-    # newtxt = r'E:\data\motorcycle\图像裁剪+分析\重新分类\模糊重分类\qingxi.txt'
-    #
-    # with open(oldtxt, 'r', encoding='utf-8')as f1, open(newtxt, 'w', encoding='utf-8')as f2:
-    #     f1lines = f1.readlines()
-    #     for f1line in f1lines:
-    #         imgname = f1line.strip('\n').split(' ')[0]   #img
-    #         target = f1line.strip('\n').split(' ')[1]   #target
-    #         hang = imgname
-    #         if os.path.exists(mohuimg + imgname):
-    #             for x in target:
-    #                 tmp = label_dict[x]
-    #                 hang = hang + ' ' + str(tmp)
-    #             hang = hang + ' 2\n'
-    #             f2.write(hang)
-    # exit()
-    txt = r"C:\Users\office\Desktop\annotation_coor_new.txt"
-    newtxt = r"C:\Users\office\Desktop\annotation_coor_new_small100.txt"
-    with open(txt, 'r', encoding='utf-8')as f1, open(newtxt, 'w', encoding='utf-8')as f2:
-        # lines = f1.readlines()
-        count = 0
-        for line in f1:
-            count += 1
-            if count < 101:
-                f2.write(line)
 
-    exit()
+    shengstr = '京沪津渝冀晋蒙辽吉黑苏浙皖闽赣鲁豫鄂湘粤桂琼川贵云藏陕甘青宁新使ABCDEFGHJKLMNPQRSTUVWXYZ0123456789警领港澳学挂'
+    label_dict = dict({x: i for i, x in enumerate(list(shengstr))})
 
 
-    oldtxt = r'E:\data\carplate\car_single\1_mohu\traindataset\2-yuanshi-ewaide.txt'
-    newtxt = r'E:\data\carplate\car_single\1_mohu\traindataset\6_new.txt'
-    oldimg = r'E:\data\carplate\car_single\1_mohu\traindataset' + '\\'
-    newimg = r'E:\data\carplate\car_single\1_mohu\traindataset\ewaide' + '\\'
-    count = 0
+    oldtxt  = r'E:\data\carplate\fangdahao\dataset\test_待整理\newcutres.txt'
+    img = r'E:\data\carplate\fangdahao\dataset\test_待整理\cutres' + '\\'
+    outimg = r'E:\data\carplate\fangdahao\dataset\test_待整理\test'+'\\'
 
-    with open(oldtxt, 'r', encoding='utf-8')as f1, open(newtxt, 'w', encoding='utf-8')as f2:
-        f1lines = f1.readlines()
-        for f1line in f1lines:
-            # count += 1
-            name = f1line.split(' ')[0]
-            oldpic = oldimg + name
+    newtxt = r'E:\data\carplate\fangdahao\dataset\test_待整理\new—newcutres.txt'
 
-            # newline = 'yuanshi/'+ str(count) + '-' + f1line.split('/')[1]
-            # newname = newline.split(' ')[0]
-            # f2.write(newline)
-            newname = name.split('/')[1]
-
-            shutil.move(oldpic, newimg + newname )
-
-
-    exit()
-
-
-
-    double = r'E:\data\carplate\car_double\2_moto_test.txt'
-    doublepanbie = r'E:\data\carplate\car_double\2_moto_test_addpanbie.txt'
-    with open(double, 'r', encoding='utf-8')as f1, open(doublepanbie, 'a', encoding='utf-8')as f2:
-        lines = f1.readlines()
+    with open(oldtxt, 'r', encoding='utf-8')as f, open(newtxt, 'w', encoding='utf-8')as f1:
+        lines =  f.readlines()
         for line in lines:
-            newline = line.strip('\n') + ' 2\n'
-            f2.write(newline)
+            line = 'test_bigcp/'+line
+            f1.write(line)
+
+
+
+    # for root, dir, files in os.walk(img):
+    #      for file in files:
+    #          print(file)
+
 
 
 
@@ -471,137 +477,19 @@ if __name__ == '__main__':
 
 
 
-    txt = r'E:\data\Test\Car\12_9月8日_cy_路测车牌\路测车牌\recres.txt'
-    resultList = sorted(random.sample(range(0, 2773), 200))
-    count = 0
-
-    oldimg = r'E:\data\Test\Car\12_9月8日_cy_路测车牌\路测车牌\new-cut-single' + '\\'
-    newimg = r'E:\data\Test\Car\12_9月8日_cy_路测车牌\路测车牌\new200' + '\\'
-
-    with open(r'E:\data\Test\Car\12_9月8日_cy_路测车牌\路测车牌\recres.txt', 'r', encoding='utf-8')as f1:
-        lines = f1.readlines();
-        for i, line in enumerate(lines):
-            imgname = line.split(' ')[0]
-            if i in resultList:
-                with open(r'E:\data\Test\Car\12_9月8日_cy_路测车牌\路测车牌\200-recres.txt', 'a', encoding='utf-8')as f3:
-                    f3.write(line)
-                shutil.copy(oldimg + str(i+1) + '-' + imgname, newimg + str(i+1) + '-' + imgname)
-
-
-    exit()
-
-
-
-
-    oldimgpath = r'E:\data\Test\Car\12_9月8日_cy_路测车牌\路测车牌\img' + '\\'
-    txtdir = r'E:\data\Test\Car\12_9月8日_cy_路测车牌\路测车牌\实际应用路侧视频.txt'
-    cutsingle = r'E:\data\Test\Car\12_9月8日_cy_路测车牌\路测车牌\cut-single' + '\\'
-    cutdouble = r'E:\data\Test\Car\12_9月8日_cy_路测车牌\路测车牌\cut-double' + '\\'
-
-    count = 0
-    with open(txtdir, 'r', encoding='utf-8')as f:
-        lines = f.readlines()
-    for line in lines:
-        count += 1
-        newline = line.strip('\n').split(' ')
-
-        frame = newline[0]
-        cartype = newline[1]
-        loc = newline
-
-        oldimg = 'img' + str(frame)  + '.jpg'
-        newimg = str(frame) + '_' + str(count) + '.jpg'
-
-        cvimg = cv2.imdecode(np.fromfile(oldimgpath + oldimg, dtype=np.uint8), -1)
-        pts1 = np.array(
-            [[float(loc[2]), float(loc[3])],  # 左上
-             [float(loc[4]), float(loc[5])],  # 右上
-             [float(loc[6]), float(loc[7])],  # 右下
-             [float(loc[8]), float(loc[9])]],  # 左下
-            dtype='float32')  # ,[float(self.zuobiao[3][0]),float(self.zuobiao[3][1])]
-        pts2 = np.array([[0, 0], [256, 0], [256, 48], [0, 48]], dtype='float32')  # ,[0,48]
-        M = cv2.getPerspectiveTransform(pts1, pts2)
-        warped = cv2.warpPerspective(cvimg, M, (256, 48))
-        if 'table1' in cartype:
-            cv2.imencode('.jpg', warped)[1].tofile(cutsingle + newimg)
-        else:
-            cv2.imencode('.jpg', warped)[1].tofile(cutdouble + newimg)
-
-
-    exit()
 
 
 
 
 
-    usetool = toolclass()
 
-    # 裁剪图像
-    img = 'E:\\data\\Test\\Car\\8yy\\day-0624\\RecordFiles\\4096X2160\\001-20200624145236836\\'
-    jc_result = 'E:\\data\\Test\\Car\\8yy\\day-0624\\RecordFiles\\4096X2160\\res\\'
-    imgcut = 'E:\\data\\Test\\Car\\8yy\\day-0624\\RecordFiles\\4096X2160\\cut\\'
-    cuttxt = 'E:\\data\\Test\\Car\\8yy\\day-0624\\RecordFiles\\4096X2160\\cut-4096.txt'
-    for root, dir, files in os.walk(jc_result):
-        for file in files:
-            count = 0
 
-            with open(jc_result + file, 'r', encoding='utf-8')as f1:
-                f1lines = f1.readlines()
-                for line in f1lines:
-                    if 'logo ' not in line:
-                        count += 1
-                        line = line.strip('\n').split(' ')[1:]
-                        print(line)
-                        imgname = file.split('.')[0] + '.jpg'
-                        pripath = img + imgname
-                        cutpath = imgcut + file.split('.')[0] + '-' + str(count) + '.jpg'
-                        newimgname = file.split('.')[0] + '-' + str(count) + '.jpg'
-                        with open(cuttxt, 'a', encoding='utf-8')as f:
-                            f.write(newimgname + '\n')
-                        cvimg = cv2.imdecode(np.fromfile(pripath, dtype=np.uint8), -1)
-                        pts1 = np.array(
-                            [[float(line[0]), float(line[1])],  # 左上
-                             [float(line[2]), float(line[3])],  # 右上
-                             [float(line[4]), float(line[5])],  # 右下
-                             [float(line[6]), float(line[7])]],  # 左下
-                            dtype='float32')  # ,[float(self.zuobiao[3][0]),float(self.zuobiao[3][1])]
-                        pts2 = np.array([[0, 0], [256, 0], [256, 48], [0, 48]], dtype='float32')  # ,[0,48]
-                        M = cv2.getPerspectiveTransform(pts1, pts2)
-                        warped = cv2.warpPerspective(cvimg, M, (256, 48))
-                        cv2.imencode('.jpg', warped)[1].tofile(cutpath)
 
-    exit()
-    # 批量裁剪成图像
-    priimg  = 'C:\\Users\\office\\Desktop\\待做\\yy\\50\\50\\'
-    txt = 'C:\\Users\\office\\Desktop\\待做\\yy\\50\\2048\\'
-    cut = 'C:\\Users\\office\\Desktop\\待做\\yy\\50\\2048-cut\\'
-    count = 0
-    for root, dir, files in os.walk(txt):
-        for file in files:
-            with open(txt+file, 'r', encoding='utf-8')as f1:
-                f1lines = f1.readlines()
-                for line in f1lines:
-                    if 'logo' not in line:
-                        count += 1
-                        line = line.strip('\n').split(' ')
-                        img = cv2.imdecode(np.fromfile(priimg + file.replace('.txt', '.jpg'), dtype=np.uint8), -1)
-                        pts1 = np.array(
-                            [[float(line[1]), float(line[2])],  # 左上
-                             [float(line[3]), float(line[4])],  # 右上
-                             [float(line[5]), float(line[6])],  # 右下
-                             [float(line[7]), float(line[8])]],  # 左下
-                            dtype='float32')  # ,[float(self.zuobiao[3][0]),float(self.zuobiao[3][1])]
-                        pts2 = np.array([[0, 0], [256, 0], [256, 48], [0, 48]], dtype='float32')  # ,[0,48]
-                        M = cv2.getPerspectiveTransform(pts1, pts2)
-                        warped = cv2.warpPerspective(img, M, (256, 48))
-                        newimg = cut + str(count) + '.jpg'
-                        cv2.imencode('.jpg', warped)[1].tofile(newimg)
 
-    exit()
-    writeroot = 'E:\\data\\carplate\\car_new_all\\2-yuanshi\\'
-    outtxt = writeroot + 'out.txt'
-    sort_clear = writeroot + '1-clear.txt'
-    sort_mohu = ''
+
+
+
+
 
 
 
@@ -664,60 +552,8 @@ if __name__ == '__main__':
 
 
 
-    priimg = 'E:\\data\\carplate\\car_all\\3_cover_all\\train\\more1\\'
-    pritxt = 'E:\\data\\carplate\\car_all\\3_cover_all\\train\\2_hecheng_more1_delhalf.txt'
-    newtxt = 'E:\\data\\carplate\\car_all\\3_cover_all\\train\\new_2_hecheng_more1_delhalf.txt'
-
-    with open(pritxt, 'r', encoding='utf-8')as f1, \
-        open(newtxt, 'w',  encoding='utf-8')as f2:
-        lines = f1.readlines()
-        count = 0
-        for line in lines:
-            pname = line.split(' ')[0].split('/')[1]
-            lname = pname
-            if os.path.exists(priimg + lname):
-                f2.write(line)
-                count += 1
-            else:
-                print(lname)
-        print(count)
 
 
-
-
-    exit()
-    txtpath = 'C:\\Users\\office\\Desktop\\车辆图片检测模型及数据\\cp200519\\'
-    priimg = 'C:\\Users\\office\\Desktop\\车辆图片检测模型及数据\\cartest\\'
-    cutimg = 'C:\\Users\\office\\Desktop\\车辆图片检测模型及数据\\cut\\'
-    count = 0
-    for root, dir, files in os.walk(txtpath):
-        for file in files:
-            imgname = file.split('.txt')[0].replace('_segmentation', '.jpg')
-            with open(txtpath+file, 'r', encoding='utf-8')as f1:
-                f1lines = f1.readlines()
-                for line in f1lines:
-                    count += 1 # 每一行的编号
-                    newimgname = str(count) + '.jpg'
-                    loc = line.strip('\n').split(' ')[1: ]  # 四个角点的坐标
-                    # 裁剪图片：
-                    img = cv2.imdecode(np.fromfile(priimg + imgname, dtype=np.uint8), -1)
-                    pts1 = np.array(
-                        [[float(loc[0]), float(loc[1])],  # 左上
-                         [float(loc[2]), float(loc[3])],  # 右上
-                         [float(loc[4]), float(loc[5])],  # 右下
-                         [float(loc[6]), float(loc[7])]],  # 左下
-                        dtype='float32')  # ,[float(self.zuobiao[3][0]),float(self.zuobiao[3][1])]
-                    pts2 = np.array([[0, 0], [256, 0], [256, 48], [0, 48]], dtype='float32')  # ,[0,48]
-                    M = cv2.getPerspectiveTransform(pts1, pts2)
-                    warped = cv2.warpPerspective(img, M, (256, 48))
-                    cv2.imencode('.jpg', warped)[1].tofile(cutimg + newimgname)
-                    with open(cutimg + '0label.txt', 'a', encoding='utf-8')as f2:
-                        hang = newimgname + '\n'
-                        f2.write(hang)
-
-
-    print(count)
-    exit()
 
 
 
@@ -845,69 +681,7 @@ if __name__ == '__main__':
     specialfile.close()
 
 
-    '''处理wusun'''
-    ### 原始xml和img
-    xmlpath = 'E:/data/carplate/car_dirty_cover/car_dirty_cover/car_wusun/第二批/03jiance/OAT/'
-    oldpath = 'E:/data/carplate/car_dirty_cover/car_dirty_cover/car_wusun/第二批/03jiance/'
 
-    # 字典
-    letters_lower = '京沪津渝冀晋蒙辽吉黑苏浙皖闽赣鲁豫鄂湘粤桂琼川贵云藏陕甘青宁新使ABCDEFGHJKLMNPQRSTUVWXYZ0123456789警领港澳学挂'
-    newdic = dict({x: i for i, x in enumerate(list(letters_lower))})
-    count = -1
-    num = 0
-    for root, dirs, filenames in os.walk(xmlpath):
-        for filename in filenames:
-            if filename.endswith('.oa'):  # 判断是否是oa文件
-                # 解析xml： ①原始图片  新图片  路径； ②到xml中获取坐标信息 ③④⑤返回值分别是坐标组、id组、type组
-                xml = xmlpath + filename
-                rtn = usetool.xmlanlyse(xml)  # 返回值分别是：rtn[坐标组，id组，type组，车牌号组]
-                zuobiaos = rtn[0]
-                ids = rtn[1]
-                type = rtn[2]
-                number = rtn[3]
-                danshuang = rtn[4]
-                if len(zuobiaos) != 0:
-                    for i,x in enumerate(zuobiaos):
-                        num += 1
-                if len(zuobiaos) == 0:
-                    continue
-                else:
-                    for i, coordinates in enumerate(zuobiaos):
-                        try:  # 对一组点开始进行变换_处理一个车牌
-                            oldjpg = oldpath + filename.replace('.oa', '.jpg')  # 加.是为了避免图片名中也含有字符oa
-                            oldjpeg = oldpath + filename.replace('.oa', '.jpeg')
-                            oldimg = [oldjpg, oldjpeg]
-                            if os.path.exists(oldimg[0]) or os.path.exists(oldimg[1]):
-                                count += 1
-                                print(count)
-                                # 原始尺寸的剪切填写
-                                normalcutres = usetool.cutpic(oldimg, coordinates, sizechange=False)
-                                if normalcutres is not 'cut_error':
-                                    normalhang = str(count) + '_' + filename.split('_')[0] + '.jpg'  # 图片名
-                                    cutimgname = normalhang
-                                    normalhang = normalhang + ' ' + type[i] + '\n'
-                                    print(normalhang)
-                                    if '双排' in danshuang[i]:
-                                        normalimg = 'E:/data/carplate/car_dirty_cover/car_dirty_cover/car_wusun/第二批/03cut/cutimg_db/'
-                                        cv2.imencode('.jpg', normalcutres)[1].tofile(normalimg + '03db-' +cutimgname)
-                                        normaltxt = 'E:/data/carplate/car_dirty_cover/car_dirty_cover/car_wusun/第二批/03cut/cutlabel_db.txt'
-                                        with open(normaltxt, 'a', encoding='utf-8')as f1:
-                                            f1.write('03db-'+normalhang)
-                                    else:
-                                        normalimg = 'E:/data/carplate/car_dirty_cover/car_dirty_cover/car_wusun/第二批/03cut/cutimg_sg/'
-                                        cv2.imencode('.jpg', normalcutres)[1].tofile(normalimg + '03sg-'+cutimgname)
-                                        normaltxt = 'E:/data/carplate/car_dirty_cover/car_dirty_cover/car_wusun/第二批/03cut/cutlabel_sg.txt'
-                                        with open(normaltxt, 'a', encoding='utf-8')as f2:
-                                            f2.write('03sg-'+normalhang)
-                            else:
-                                with open('nopicture.txt', 'a') as f:
-                                    f.write(filename + '\n')
-
-                        except Exception as err:
-                            print('发生错误！ ' + oldimg + ':' + str(err))
-                            with open('err_files.txt', 'a') as f:
-                                f.write(oldimg + ':' + str(err) + '\n')
-    print(num)
 
 
 

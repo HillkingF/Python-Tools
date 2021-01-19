@@ -446,33 +446,98 @@ class toolclass:
 
 
 if __name__ == '__main__':
-
-    shengstr = '京沪津渝冀晋蒙辽吉黑苏浙皖闽赣鲁豫鄂湘粤桂琼川贵云藏陕甘青宁新使ABCDEFGHJKLMNPQRSTUVWXYZ0123456789警领港澳学挂'
-    label_dict = dict({x: i for i, x in enumerate(list(shengstr))})
-
-
-    oldtxt  = r'E:\data\carplate\fangdahao\dataset\test_待整理\newcutres.txt'
-    img = r'E:\data\carplate\fangdahao\dataset\test_待整理\cutres' + '\\'
-    outimg = r'E:\data\carplate\fangdahao\dataset\test_待整理\test'+'\\'
-
-    newtxt = r'E:\data\carplate\fangdahao\dataset\test_待整理\new—newcutres.txt'
-
-    with open(oldtxt, 'r', encoding='utf-8')as f, open(newtxt, 'w', encoding='utf-8')as f1:
-        lines =  f.readlines()
-        for line in lines:
-            line = 'test_bigcp/'+line
-            f1.write(line)
-
-
-
-    # for root, dir, files in os.walk(img):
-    #      for file in files:
-    #          print(file)
+    ## 随机选出200张加入测试集
+    # txtdir = r'E:\data\carplate\fangdahao\20210113车尾放大号982张\txt' + '\\'
+    # test = r'E:\data\carplate\fangdahao\20210113车尾放大号982张\out' + '\\'
+    #
+    # resultList = sorted(random.sample(range(0, 982), 200))
+    # for root, dir, files in os.walk(txtdir):
+    #     for i, file in enumerate(files):
+    #         if i in resultList:
+    #             shutil.move(txtdir + file, test + file)
+    #
+    # exit()
 
 
 
 
 
+    # shengstr = '京沪津渝冀晋蒙辽吉黑苏浙皖闽赣鲁豫鄂湘粤桂琼川贵云藏陕甘青宁新使ABCDEFGHJKLMNPQRSTUVWXYZ0123456789警领港澳学挂'
+    # label_dict = dict({x: i for i, x in enumerate(list(shengstr))})
+    #
+    # txt = r'E:\data\carplate\fangdahao\20210113车尾放大号982张\cut.txt'
+    # newtxt = r'E:\data\carplate\fangdahao\20210113车尾放大号982张\newcut.txt'
+    #
+    # with open(txt, 'r', encoding='utf-8')as f1, open(newtxt, 'a', encoding='utf-8')as f2:
+    #     lines = f1.readlines()
+    #     for line in lines:
+    #         name = line.split(' ')[0]
+    #         num = line.strip('\n').split(' ')[1]
+    #         hang = name
+    #         try:
+    #             for x in num:
+    #                 hang = hang + ' ' + str(label_dict[x])
+    #         except:
+    #             print(line)
+    #             continue
+    #         hang = 'test_bigcp/' + hang + '\n'
+    #         f2.write(hang)
+    #
+    #
+    # exit()
+
+    txtdir = r'E:\data\carplate\fangdahao\20210113车尾放大号982张\782txt' + '\\'
+    imgdir = r'E:\data\carplate\fangdahao\20210113车尾放大号982张\jpg' + '\\'
+    cutimg = r'E:\data\carplate\fangdahao\20210113车尾放大号982张\cut' + '\\'
+    newtxt = r'E:\data\carplate\fangdahao\20210113车尾放大号982张\cut.txt'
+
+    for root, dir, files in os.walk(txtdir):
+        for file in files:
+            with open(txtdir + file, 'r', encoding='utf-8')as f1:
+                lines = f1.readlines()
+                linecount = 0
+                for line in lines:
+                    linecount += 1
+                    zuox = float(line.split(' ')[1])
+                    zuoy = float(line.split(' ')[2])
+                    carplate = line.strip('\n').split(' ')[-1]
+                    w = float(line.split(' ')[3])
+                    h = float(line.split(' ')[4])
+
+                    oldimg = imgdir + file.split('.')[0] + '.jpg'
+                    newimg = cutimg + file.split('.')[0] + '-' + str(linecount) + '.jpg'
+
+                    hang = file.split('.')[0] + '-' + str(linecount) + '.jpg' + ' ' + carplate + '\n'
+
+                    img = cv2.imdecode(np.fromfile(oldimg, dtype=np.uint8), -1)
+
+                    sizechange = False
+                    if sizechange == False:
+                        zuox = 0
+                        youx = 0
+                        shangy = 0
+                        xiay = 0
+                    else:  # sizechange == True:
+                        zuox = random.randint(0, 17)
+                        youx = random.randint(0, 17)
+                        shangy = random.randint(0, 17)
+                        xiay = random.randint(0, 17)
+
+                    pts1 = np.array(
+                        [[zuox - zuox , zuoy - shangy],  # 左上
+                         [zuox + w + youx, zuoy - shangy],  # 右上
+                         [zuox + w + youx, zuoy + h + xiay],  # 右下
+                         [zuox - zuox, zuoy + h + xiay]],  # 左下
+                        dtype='float32')
+
+
+
+                    pts2 = np.array([[0, 0], [256, 0], [256, 48], [0, 48]], dtype='float32')  # ,[0,48]
+                    M = cv2.getPerspectiveTransform(pts1, pts2)
+                    warped = cv2.warpPerspective(img, M, (256, 48))
+                    cv2.imencode('.jpg', warped)[1].tofile(newimg)
+                    with open(newtxt, 'a', encoding='utf-8')as f2:
+                        f2.write(hang)
     exit()
 
 

@@ -446,6 +446,33 @@ class toolclass:
 
 
 if __name__ == '__main__':
+
+    txt36 = r'E:\data\carplate\fangdahao\重复车尾数据.txt'
+    newcut = r'E:\data\carplate\fangdahao\第2批-20201221车尾放大号标注数据-共960个标签\20201221车尾放大号标注数据\newcut.txt'
+    txt1 = r'E:\data\carplate\fangdahao\第2批-20201221车尾放大号标注数据-共960个标签\20201221车尾放大号标注数据\cut.txt'
+    with open(txt36,'r',encoding='utf-8')as f1, open(txt1,'r',encoding='utf-8')as f2,\
+        open(newcut, 'w', encoding='utf-8')as f3:
+        f1lines = f1.readlines()
+        f2lines = f2.readlines()
+        count = 0
+
+        for f2line in f2lines:
+            sign = 0
+            count += 1
+            print(count)
+            name = f2line.split(' ')[0][0:-6]
+            print(name)
+            for f1line in f1lines:
+                if name in f1line:
+                    sign = 1
+                    break
+            if sign == 0:
+                f3.write(f2line)
+            sign = 0
+
+    exit()
+
+
     ## 随机选出200张加入测试集
     # txtdir = r'E:\data\carplate\fangdahao\20210113车尾放大号982张\txt' + '\\'
     # test = r'E:\data\carplate\fangdahao\20210113车尾放大号982张\out' + '\\'
@@ -486,10 +513,10 @@ if __name__ == '__main__':
     #
     # exit()
 
-    txtdir = r'E:\data\carplate\fangdahao\20210113车尾放大号982张\782txt' + '\\'
-    imgdir = r'E:\data\carplate\fangdahao\20210113车尾放大号982张\jpg' + '\\'
-    cutimg = r'E:\data\carplate\fangdahao\20210113车尾放大号982张\cut' + '\\'
-    newtxt = r'E:\data\carplate\fangdahao\20210113车尾放大号982张\cut.txt'
+    txtdir = r'E:\data\carplate\fangdahao\第1批-测试数据-150张图片\第一批-测试数据-150张图片\原始压缩包\txt' + '\\'
+    imgdir = r'E:\data\carplate\fangdahao\第1批-测试数据-150张图片\第一批-测试数据-150张图片\原始压缩包\jpg' + '\\'
+    cutimg = r'E:\data\carplate\fangdahao\第1批-测试数据-150张图片\第一批-测试数据-150张图片\原始压缩包\cut' + '\\'
+    newtxt = r'E:\data\carplate\fangdahao\第1批-测试数据-150张图片\第一批-测试数据-150张图片\原始压缩包\cut.txt'
 
     for root, dir, files in os.walk(txtdir):
         for file in files:
@@ -511,27 +538,23 @@ if __name__ == '__main__':
 
                     img = cv2.imdecode(np.fromfile(oldimg, dtype=np.uint8), -1)
 
-                    sizechange = False
+                    sizechange = True
                     if sizechange == False:
-                        zuox = 0
-                        youx = 0
-                        shangy = 0
-                        xiay = 0
+                        jzuox = 0
+                        jyoux = 0
+                        jshangy = 0
+                        jxiay = 0
                     else:  # sizechange == True:
-                        zuox = random.randint(0, 17)
-                        youx = random.randint(0, 17)
-                        shangy = random.randint(0, 17)
-                        xiay = random.randint(0, 17)
-
+                        jzuox = random.randint(-2, 24)
+                        jyoux = random.randint(-2, 24)
+                        jshangy = random.randint(-2, 20)
+                        jxiay = random.randint(-2, 20)
                     pts1 = np.array(
-                        [[zuox - zuox , zuoy - shangy],  # 左上
-                         [zuox + w + youx, zuoy - shangy],  # 右上
-                         [zuox + w + youx, zuoy + h + xiay],  # 右下
-                         [zuox - zuox, zuoy + h + xiay]],  # 左下
+                        [[zuox - jzuox , zuoy - jshangy],  # 左上
+                         [zuox + w + jyoux, zuoy - jshangy],  # 右上
+                         [zuox + w + jyoux, zuoy + h + jxiay],  # 右下
+                         [zuox - jzuox, zuoy + h + jxiay]],  # 左下
                         dtype='float32')
-
-
-
                     pts2 = np.array([[0, 0], [256, 0], [256, 48], [0, 48]], dtype='float32')  # ,[0,48]
                     M = cv2.getPerspectiveTransform(pts1, pts2)
                     warped = cv2.warpPerspective(img, M, (256, 48))

@@ -447,71 +447,92 @@ class toolclass:
 
 if __name__ == '__main__':
 
-    txt36 = r'E:\data\carplate\fangdahao\重复车尾数据.txt'
-    newcut = r'E:\data\carplate\fangdahao\第2批-20201221车尾放大号标注数据-共960个标签\20201221车尾放大号标注数据\newcut.txt'
-    txt1 = r'E:\data\carplate\fangdahao\第2批-20201221车尾放大号标注数据-共960个标签\20201221车尾放大号标注数据\cut.txt'
-    with open(txt36,'r',encoding='utf-8')as f1, open(txt1,'r',encoding='utf-8')as f2,\
-        open(newcut, 'w', encoding='utf-8')as f3:
-        f1lines = f1.readlines()
-        f2lines = f2.readlines()
-        count = 0
+    # txt36 = r'E:\data\carplate\fangdahao\重复车尾数据.txt'
+    # newcut = r'E:\data\carplate\fangdahao\第2批-20201221车尾放大号标注数据-共960个标签\20201221车尾放大号标注数据\newcut.txt'
+    # txt1 = r'E:\data\carplate\fangdahao\第2批-20201221车尾放大号标注数据-共960个标签\20201221车尾放大号标注数据\cut.txt'
+    # with open(txt36,'r',encoding='utf-8')as f1, open(txt1,'r',encoding='utf-8')as f2,\
+    #     open(newcut, 'w', encoding='utf-8')as f3:
+    #     f1lines = f1.readlines()
+    #     f2lines = f2.readlines()
+    #     count = 0
+    #
+    #     for f2line in f2lines:
+    #         sign = 0
+    #         count += 1
+    #         print(count)
+    #         name = f2line.split(' ')[0][0:-6]
+    #         print(name)
+    #         for f1line in f1lines:
+    #             if name in f1line:
+    #                 sign = 1
+    #                 break
+    #         if sign == 0:
+    #             f3.write(f2line)
+    #         sign = 0
+    #
+    # exit()
 
-        for f2line in f2lines:
-            sign = 0
-            count += 1
-            print(count)
-            name = f2line.split(' ')[0][0:-6]
-            print(name)
-            for f1line in f1lines:
-                if name in f1line:
-                    sign = 1
-                    break
-            if sign == 0:
-                f3.write(f2line)
-            sign = 0
+
+    # # 随机选出300张当作验证集
+    # txt = r'E:\data\carplate\fangdahao\dataset\all.txt'
+    # train = r'E:\data\carplate\fangdahao\dataset\txttrain.txt'
+    # val = r'E:\data\carplate\fangdahao\dataset\txtval.txt'
+    #
+    # oldimg = r'E:\data\carplate\fangdahao\dataset\all' + '\\'
+    # valimg = r'E:\data\carplate\fangdahao\dataset\val' + '\\'
+    # trainimg = r'E:\data\carplate\fangdahao\dataset\train' + '\\'
+    #
+    # resultList = sorted(random.sample(range(0, 4348), 300))
+    # with open(txt, 'r', encoding='utf-8')as f1, open(train, 'w',encoding='utf-8')as f2, open(val, 'w',encoding='utf-8')as f3:
+    #     f1lines = f1.readlines()
+    #     count = 0
+    #     for i, line in enumerate(f1lines):
+    #         name = line.split(' ')[0]
+    #         if i in resultList:
+    #             count += 1
+    #             print(count)
+    #             try:
+    #                 shutil.move(oldimg + name, valimg + name)
+    #                 f3.write(line)
+    #
+    #             except:
+    #                 print(line)
+    #         else:
+    #             try:
+    #                 shutil.move(oldimg + name, trainimg + name)
+    #                 f2.write(line)
+    #
+    #             except:
+    #                 print(line)
+    # exit()
+
+
+
+
+
+    shengstr = '京沪津渝冀晋蒙辽吉黑苏浙皖闽赣鲁豫鄂湘粤桂琼川贵云藏陕甘青宁新使ABCDEFGHJKLMNPQRSTUVWXYZ0123456789警领港澳学挂'
+    label_dict = dict({x: i for i, x in enumerate(list(shengstr))})
+
+    txt = r'E:\data\carplate\fangdahao\dataset\test.txt'
+    newtxt = r'E:\data\carplate\fangdahao\dataset\newtest.txt'
+
+    with open(txt, 'r', encoding='utf-8')as f1, open(newtxt, 'a', encoding='utf-8')as f2:
+        lines = f1.readlines()
+        for line in lines:
+            name = line.split(' ')[0]
+            num = line.strip('\n').split(' ')[1]
+            hang = name
+            try:
+                for x in num:
+                    hang = hang + ' ' + str(label_dict[x])
+            except:
+                print(line)
+                continue
+            hang = 'test/' + hang + '\n'
+            f2.write(hang)
+
 
     exit()
-
-
-    ## 随机选出200张加入测试集
-    # txtdir = r'E:\data\carplate\fangdahao\20210113车尾放大号982张\txt' + '\\'
-    # test = r'E:\data\carplate\fangdahao\20210113车尾放大号982张\out' + '\\'
-    #
-    # resultList = sorted(random.sample(range(0, 982), 200))
-    # for root, dir, files in os.walk(txtdir):
-    #     for i, file in enumerate(files):
-    #         if i in resultList:
-    #             shutil.move(txtdir + file, test + file)
-    #
-    # exit()
-
-
-
-
-
-    # shengstr = '京沪津渝冀晋蒙辽吉黑苏浙皖闽赣鲁豫鄂湘粤桂琼川贵云藏陕甘青宁新使ABCDEFGHJKLMNPQRSTUVWXYZ0123456789警领港澳学挂'
-    # label_dict = dict({x: i for i, x in enumerate(list(shengstr))})
-    #
-    # txt = r'E:\data\carplate\fangdahao\20210113车尾放大号982张\cut.txt'
-    # newtxt = r'E:\data\carplate\fangdahao\20210113车尾放大号982张\newcut.txt'
-    #
-    # with open(txt, 'r', encoding='utf-8')as f1, open(newtxt, 'a', encoding='utf-8')as f2:
-    #     lines = f1.readlines()
-    #     for line in lines:
-    #         name = line.split(' ')[0]
-    #         num = line.strip('\n').split(' ')[1]
-    #         hang = name
-    #         try:
-    #             for x in num:
-    #                 hang = hang + ' ' + str(label_dict[x])
-    #         except:
-    #             print(line)
-    #             continue
-    #         hang = 'test_bigcp/' + hang + '\n'
-    #         f2.write(hang)
-    #
-    #
-    # exit()
 
     txtdir = r'E:\data\carplate\fangdahao\第1批-测试数据-150张图片\第一批-测试数据-150张图片\原始压缩包\txt' + '\\'
     imgdir = r'E:\data\carplate\fangdahao\第1批-测试数据-150张图片\第一批-测试数据-150张图片\原始压缩包\jpg' + '\\'

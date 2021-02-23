@@ -446,6 +446,65 @@ class toolclass:
 
 
 if __name__ == '__main__':
+    priimg = r'E:\data\Test\Car\15\路侧车牌号码识别测试\test2\pri' + '\\'
+    txtdir = r'E:\data\Test\Car\15\路侧车牌号码识别测试\test2\res2' + '\\'
+    cutimg = r'E:\data\Test\Car\15\路侧车牌号码识别测试\test2\cut' + '\\'
+    for root, dir, txtfiles in os.walk(txtdir):
+        for txtfile in txtfiles:
+            count = 0
+            name = txtfile.split('.')[0]
+            with open(txtdir + txtfile, 'r', encoding='utf-8')as f1:
+                lines = f1.readlines()
+                for line in lines:
+                    count += 1
+                    loc = line.strip('\n').split(' ')
+                    oldimg = priimg + name + '.jpg'
+                    newimg = cutimg + name + '-' + str(count) + '.jpg'
+                    img = cv2.imdecode(np.fromfile(oldimg, dtype=np.uint8), -1)
+
+                    pts1 = np.array(
+                        [[float(loc[1]), float(loc[2])],  # 左上
+                         [float(loc[3]), float(loc[4])],  # 右上
+                         [float(loc[5]), float(loc[6])],  # 右下
+                         [float(loc[7]), float(loc[8])]],  # 左下
+                        dtype='float32')
+                    pts2 = np.array([[0, 0], [256, 0], [256, 48], [0, 48]], dtype='float32')  # ,[0,48]
+                    M = cv2.getPerspectiveTransform(pts1, pts2)
+                    warped = cv2.warpPerspective(img, M, (256, 48))
+                    cv2.imencode('.jpg', warped)[1].tofile(newimg)
+
+
+
+
+    exit()
+    img = r'E:\data\Test\Car\15\路侧车牌号码识别测试\pre' + '\\'
+    newimg = r'E:\data\Test\Car\15\路侧车牌号码识别测试\test2\pri' + '\\'
+    count = 0
+    for root, dir, files in os.walk(img):
+        for file in files:
+            count += 1
+            shutil.copy(img + file, newimg + str(count) + '.jpg')
+            print(str(count) + '.jpg')
+
+    exit()
+    # txt = r"E:\data\carplate\fangdahao\7\cut\bigplate2.txt"
+    # t2 = r"E:\data\carplate\fangdahao\7\cut\2.txt"
+    # tw = r"E:\data\carplate\fangdahao\7\cut\wu.txt"
+    # img = r"E:\data\carplate\fangdahao\7\cut\bigplate2" + "\\"
+    # imgw = r"E:\data\carplate\fangdahao\7\cut\无" + "\\"
+    # with open(txt,'r', encoding='utf-8') as f1:
+    #     lines = f1.readlines()
+    #     for line in lines:
+    #         words = line.strip('\n').split(' ')
+    #         if words[1]=="无" :
+    #             with open(tw, 'a', encoding='utf-8')as f2:
+    #                 f2.write(line)
+    #                 shutil.move(img + words[0], imgw + words[0])
+    #         else:
+    #             with open(t2, 'a', encoding='utf-8')as f3:
+    #                 f3.write(line)
+    #
+    # exit()
 
     # txt36 = r'E:\data\carplate\fangdahao\重复车尾数据.txt'
     # newcut = r'E:\data\carplate\fangdahao\第2批-20201221车尾放大号标注数据-共960个标签\20201221车尾放大号标注数据\newcut.txt'
@@ -510,34 +569,34 @@ if __name__ == '__main__':
 
 
 
-    shengstr = '京沪津渝冀晋蒙辽吉黑苏浙皖闽赣鲁豫鄂湘粤桂琼川贵云藏陕甘青宁新使ABCDEFGHJKLMNPQRSTUVWXYZ0123456789警领港澳学挂'
-    label_dict = dict({x: i for i, x in enumerate(list(shengstr))})
+#     shengstr = '京沪津渝冀晋蒙辽吉黑苏浙皖闽赣鲁豫鄂湘粤桂琼川贵云藏陕甘青宁新使ABCDEFGHJKLMNPQRSTUVWXYZ0123456789警领港澳学挂'
+#     label_dict = dict({x: i for i, x in enumerate(list(shengstr))})
+#
+#     txt = r'E:\data\carplate\fangdahao\dataset\test.txt'
+#     newtxt = r'E:\data\carplate\fangdahao\dataset\newtest.txt'
+#
+#     with open(txt, 'r', encoding='utf-8')as f1, open(newtxt, 'a', encoding='utf-8')as f2:
+#         lines = f1.readlines()
+#         for line in lines:
+#             name = line.split(' ')[0]
+#             num = line.strip('\n').split(' ')[1]
+#             hang = name
+#             try:
+#                 for x in num:
+#                     hang = hang + ' ' + str(label_dict[x])
+#             except:
+#                 print(line)
+#                 continue
+#             hang = 'test/' + hang + '\n'
+#             f2.write(hang)
+#
+#
+#     exit()
 
-    txt = r'E:\data\carplate\fangdahao\dataset\test.txt'
-    newtxt = r'E:\data\carplate\fangdahao\dataset\newtest.txt'
-
-    with open(txt, 'r', encoding='utf-8')as f1, open(newtxt, 'a', encoding='utf-8')as f2:
-        lines = f1.readlines()
-        for line in lines:
-            name = line.split(' ')[0]
-            num = line.strip('\n').split(' ')[1]
-            hang = name
-            try:
-                for x in num:
-                    hang = hang + ' ' + str(label_dict[x])
-            except:
-                print(line)
-                continue
-            hang = 'test/' + hang + '\n'
-            f2.write(hang)
-
-
-    exit()
-
-    txtdir = r'E:\data\carplate\fangdahao\第1批-测试数据-150张图片\第一批-测试数据-150张图片\原始压缩包\txt' + '\\'
-    imgdir = r'E:\data\carplate\fangdahao\第1批-测试数据-150张图片\第一批-测试数据-150张图片\原始压缩包\jpg' + '\\'
-    cutimg = r'E:\data\carplate\fangdahao\第1批-测试数据-150张图片\第一批-测试数据-150张图片\原始压缩包\cut' + '\\'
-    newtxt = r'E:\data\carplate\fangdahao\第1批-测试数据-150张图片\第一批-测试数据-150张图片\原始压缩包\cut.txt'
+    txtdir = r'E:\data\carplate\fangdahao\7\txt' + '\\'
+    imgdir = r'E:\data\carplate\fangdahao\7\jpg' + '\\'
+    cutimg = r'E:\data\carplate\fangdahao\7\cut' + '\\'
+    newtxt = r'E:\data\carplate\fangdahao\7\cut.txt'
 
     for root, dir, files in os.walk(txtdir):
         for file in files:
@@ -545,6 +604,7 @@ if __name__ == '__main__':
                 lines = f1.readlines()
                 linecount = 0
                 for line in lines:
+                    words = line.strip('\n').split(' ')
                     linecount += 1
                     zuox = float(line.split(' ')[1])
                     zuoy = float(line.split(' ')[2])
@@ -552,14 +612,14 @@ if __name__ == '__main__':
                     w = float(line.split(' ')[3])
                     h = float(line.split(' ')[4])
 
-                    oldimg = imgdir + file.split('.')[0] + '.jpg'
-                    newimg = cutimg + file.split('.')[0] + '-' + str(linecount) + '.jpg'
+                    oldimg = imgdir + file[0:-4] +'.jpg'
+                    # newimg = cutimg + file.split('.')[0] + '-' + str(linecount) + '.jpg'
 
-                    hang = file.split('.')[0] + '-' + str(linecount) + '.jpg' + ' ' + carplate + '\n'
+                    hang = file[0:-4] + '-' + str(linecount) + '.jpg' + ' ' + carplate + '\n'
 
                     img = cv2.imdecode(np.fromfile(oldimg, dtype=np.uint8), -1)
 
-                    sizechange = True
+                    sizechange = False
                     if sizechange == False:
                         jzuox = 0
                         jyoux = 0
@@ -579,9 +639,30 @@ if __name__ == '__main__':
                     pts2 = np.array([[0, 0], [256, 0], [256, 48], [0, 48]], dtype='float32')  # ,[0,48]
                     M = cv2.getPerspectiveTransform(pts1, pts2)
                     warped = cv2.warpPerspective(img, M, (256, 48))
-                    cv2.imencode('.jpg', warped)[1].tofile(newimg)
-                    with open(newtxt, 'a', encoding='utf-8')as f2:
-                        f2.write(hang)
+
+                    if words[0]=='bigplate1':
+                        newimg = cutimg + 'bigplate1\\' + file[0:-4] + '-' + str(linecount) + '.jpg'
+                        cv2.imencode('.jpg', warped)[1].tofile(newimg)
+                        with open(cutimg + 'bigplate1.txt', 'a', encoding='utf-8')as f2:
+                            f2.write(hang)
+                    elif words[0]=='bigplate2':
+                        newimg = cutimg + 'bigplate2\\' + file[0:-4] + '-' + str(linecount) + '.jpg'
+                        cv2.imencode('.jpg', warped)[1].tofile(newimg)
+                        with open(cutimg + 'bigplate2.txt', 'a', encoding='utf-8')as f2:
+                            f2.write(hang)
+
+                    elif words[0]=='bigplate3':
+                        newimg = cutimg + 'bigplate3\\' + file[0:-4] + '-' + str(linecount) + '.jpg'
+                        cv2.imencode('.jpg', warped)[1].tofile(newimg)
+                        with open(cutimg + 'bigplate3.txt', 'a', encoding='utf-8')as f2:
+                            f2.write(hang)
+
+                    elif words[0]=='无':
+                        newimg = cutimg + '无\\' + file[0:-4] + '-' + str(linecount) + '.jpg'
+                        cv2.imencode('.jpg', warped)[1].tofile(newimg)
+                        with open(cutimg + 'wu.txt', 'a', encoding='utf-8')as f2:
+                            f2.write(hang)
+
     exit()
 
 
